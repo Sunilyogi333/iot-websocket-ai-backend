@@ -11,15 +11,18 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
-app.use(cors({
-    allowedHeaders: ['Authorization'],
-    origin: '*'
-  }));
+app.use(
+  cors({
+    allowedHeaders: ["Authorization"],
+    origin: "*",
+    credentials: true,
+  })
+);
 
 // Routes
-app.get("/",(req,res)=>{
-    res.send("Welcome to the Child Thrift's homepage")
-})
+app.get("/", (req, res) => {
+  res.send("Welcome to the Child Thrift's homepage");
+});
 
 app.use("/auth", authRoutes);
 app.use("/chickens", chickenRoutes);
@@ -28,6 +31,6 @@ app.use("/users", userRoutes);
 
 // Error handler
 app.use(errorHandler);
-console.log("app.js is running")
+console.log("app.js is running");
 
 export default app;
