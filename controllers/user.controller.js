@@ -37,72 +37,72 @@ const editAccountDetails = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user, "User details updated successfully"));
 });
 
-// const getAINewsByModel = asyncHandler(async (req, res) => {
-//   const options = {
-//     mode: "text",
-//     pythonOptions: ["-u"], // Ensure unbuffered output from Python
-//     scriptPath: "AImodel", // Path to your Python script
-//     args: [], // Pass any arguments your script needs here
-//   };
-
-//   try {
-//     // Run the Python script and wait for the result
-//     await new Promise((resolve, reject) => {
-//       PythonShell.run("predict.py", options, (error, results) => {
-//         if (error) {
-//           console.error("Python script error:", error);
-//           reject("Error in Python script");
-//         } else {
-//           console.log("Python script results:", results);
-
-//           // After the Python script finishes, read the generated JSON file
-//           const filePath =
-//             "/home/sunil/Documents/Coding/KukhuriKaa/backend/AImodel/news_predictions.json";
-
-//           fs.readFile(filePath, "utf8", (err, data) => {
-//             if (err) {
-//               console.error("Error reading JSON file:", err);
-//               return reject("Failed to read JSON file");
-//             }
-
-//             try {
-//               const jsonData = JSON.parse(data); // Parse the JSON data
-//               console.log("Parsed JSON data:", jsonData);
-//               resolve(jsonData); // Resolve with the parsed JSON data
-//             } catch (parseError) {
-//               console.error("Error parsing JSON:", parseError);
-//               reject("Error parsing JSON data");
-//             }
-//           });
-//         }
-//       });
-//     })
-//       .then((jsonData) => {
-//         // Send the parsed JSON data as the response
-//         res.status(200).json({ data: jsonData });
-//       })
-//       .catch((error) => {
-//         // Handle any error that occurs during the process
-//         console.error("Error:", error);
-//         res.status(500).json({ error: error });
-//       });
-//   } catch (error) {
-//     console.error("Error in executing Python script:", error);
-//     res.status(500).json({ error: "Failed to run AI model" });
-//   }
-// });
 const getAINewsByModel = asyncHandler(async (req, res) => {
+  const options = {
+    mode: "text",
+    pythonOptions: ["-u"], // Ensure unbuffered output from Python
+    scriptPath: "AImodel", // Path to your Python script
+    args: [], // Pass any arguments your script needs here
+  };
+
   try {
-    // Call the Python Flask API to get the predictions
-    const response = await axios.get('http://localhost:5000/predict_news');
-    
-    // Send the predictions as response to the frontend
-    res.status(200).json({ data: response.data });
+    // Run the Python script and wait for the result
+    await new Promise((resolve, reject) => {
+      PythonShell.run("predict.py", options, (error, results) => {
+        if (error) {
+          console.error("Python script error:", error);
+          reject("Error in Python script");
+        } else {
+          console.log("Python script results:", results);
+
+          // After the Python script finishes, read the generated JSON file
+          const filePath =
+            "/home/sunil/Documents/Coding/KukhuriKaa/backend/AImodel/news_predictions.json";
+
+          fs.readFile(filePath, "utf8", (err, data) => {
+            if (err) {
+              console.error("Error reading JSON file:", err);
+              return reject("Failed to read JSON file");
+            }
+
+            try {
+              const jsonData = JSON.parse(data); // Parse the JSON data
+              console.log("Parsed JSON data:", jsonData);
+              resolve(jsonData); // Resolve with the parsed JSON data
+            } catch (parseError) {
+              console.error("Error parsing JSON:", parseError);
+              reject("Error parsing JSON data");
+            }
+          });
+        }
+      });
+    })
+      .then((jsonData) => {
+        // Send the parsed JSON data as the response
+        res.status(200).json({ data: jsonData });
+      })
+      .catch((error) => {
+        // Handle any error that occurs during the process
+        console.error("Error:", error);
+        res.status(500).json({ error: error });
+      });
   } catch (error) {
-    console.error('Error fetching predictions from Python:', error);
-    res.status(500).json({ error: 'Failed to fetch predictions' });
+    console.error("Error in executing Python script:", error);
+    res.status(500).json({ error: "Failed to run AI model" });
   }
 });
+// const getAINewsByModel = asyncHandler(async (req, res) => {
+//   try {
+//     // Call the Python Flask API to get the predictions
+//     const response = await axios.get('http://localhost:5000/predict_news');
+    
+//     // Send the predictions as response to the frontend
+//     res.status(200).json({ data: response.data });
+//   } catch (error) {
+//     console.error('Error fetching predictions from Python:', error);
+//     res.status(500).json({ error: 'Failed to fetch predictions' });
+//   }
+// });
 
 
 export { getCurrentUser, editAccountDetails, getAINewsByModel };
