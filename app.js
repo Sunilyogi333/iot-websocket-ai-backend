@@ -21,7 +21,7 @@ app.use(
 
 // Routes
 app.get("/", (req, res) => {
-  res.send("Welcome to the Child Thrift's homepage");
+  res.send("Welcome to the Smart poultry Farm homepage");
 });
 
 app.use("/auth", authRoutes);
