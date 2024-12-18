@@ -1,0 +1,90 @@
+#include <WiFi.h>
+#include <WebSocketsClient.h>
+#include "DHT.h"
+
+// WiFi credentials
+const char* ssid = "LUCKDOWN S03";
+const char* password = "Warmbodies@2022";
+
+// WebSocket server address and port
+const char* webSocketServer = "192.168.1.66";  // Replace with your server's IP
+const uint16_t port = 3000;                   // WebSocket server's port
+
+// DHT22 configuration
+#define DHTPIN 4  // Data pin connected to D4
+#define DHTTYPE DHT22
+DHT dht(DHTPIN, DHTTYPE);
+
+WebSocketsClient webSocket;
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+
+  // Initialize DHT sensor
+  dht.begin();
+
+  // Connect to WiFi
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nConnected to WiFi");
+
+  // Initialize WebSocket and connect to server
+  webSocket.begin(webSocketServer, port);
+  webSocket.onEvent(webSocketEvent);
+}
+
+void loop() {
+  webSocket.loop();  // Keep WebSocket connection alive
+  sendSensorData();  // Send DHT22 data periodically
+  delay(5000);       // Send data every 5 seconds
+}
+
+void sendSensorData() {
+  float temperature = dht.readTemperature();
+  float humidity = dht.readHumidity();
+
+  // Check if the readings are valid
+  if (isnan(temperature) || isnan(humidity)) {
+    Serial.println("Failed to read from DHT sensor!");
+    return;
+  }
+
+Serial.print("Humidity: ");
+  Serial.print(humidity);
+  Serial.print(" %\t");
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.println(" °C\t");
+  Serial.print("\n");
+
+  // Create JSON payload
+  String jsonPayload = String("{\"temperature\":") + temperature + 
+                       ",\"humidity\":" + humidity + "}";
+
+  // Send JSON payload to WebSocket server
+  webSocket.sendTXT(jsonPayload);
+  yield();
+}
+
+void webSocketEvent(WStype_t type, uint8_t* payload, size_t length) {
+  switch (type) {
+    case WStype_CONNECTED:
+      Serial.println("Connected to WebSocket server");
+      break;
+
+    case WStype_DISCONNECTED:
+      Serial.println("Disconnected from WebSocket server");
+      break;
+
+    case WStype_TEXT:
+      Serial.printf("Received message: %s\n", payload);
+      break;
+
+    default:
+      break;
+  }
+}

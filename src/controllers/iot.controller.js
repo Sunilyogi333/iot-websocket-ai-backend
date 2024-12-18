@@ -11,7 +11,7 @@ export const controlLed = (req, res) => {
     // Send the command to WebSocket to control the ESP32 LED
     if (wss.clients.size > 0) { // Ensure there is a WebSocket client connected
       wss.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN) {
+        if (client.readyState === 1) {
           client.send(action); // Send the action to the WebSocket client (ESP32)
         }
       });
