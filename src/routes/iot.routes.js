@@ -1,11 +1,10 @@
-// import express from "express";
-// // import { getSensorData } from "../controllers/iot.controller.js";
-// import verifyFirebaseToken from "../middlewares/firebaseAuth.middleware.js";
+// src/routes/iot.routes.js
+import express from 'express';
+import { controlLed } from '../controllers/iot.controller.js';
 
-// const router = express.Router();
+const router = express.Router();
 
-// router.use(verifyFirebaseToken);
+// Endpoint to control the LED
+router.post('/control-led', controlLed);
 
-// router.get("/", getSensorData);
-
-// export default router;
+export default router;

@@ -4,7 +4,7 @@ import cors from "cors";
 import authRoutes from "./routes/auth.routes.js";
 import chickenRoutes from "./routes/chicken.routes.js";
 import userRoutes from "./routes/user.routes.js";
-// import iotRoutes from "./routes/iot.routes.js";
+import iotRoutes from "./routes/iot.routes.js";
 import aiRoutes from "./routes/ai.routes.js";
 import errorHandler from "./middlewares/errorHandler.middleware.js";
 
@@ -29,7 +29,7 @@ app.use("/auth", authRoutes);
 app.use("/chickens", chickenRoutes);
 app.use("/users", userRoutes);
 app.use("/ai", aiRoutes);
-// app.use("/iot", iotRoutes);
+app.use('/iot', iotRoutes); // Register the new API route
 
 // Error handler
 app.use(errorHandler);
