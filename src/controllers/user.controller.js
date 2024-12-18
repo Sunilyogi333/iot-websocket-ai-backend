@@ -41,7 +41,7 @@ const getAINewsByModel = asyncHandler(async (req, res) => {
   const options = {
     mode: "text",
     pythonOptions: ["-u"], // Ensure unbuffered output from Python
-    scriptPath: "AImodel", // Path to your Python script
+    scriptPath: "../model 2", // Path to your Python script
     args: [], // Pass any arguments your script needs here
   };
 

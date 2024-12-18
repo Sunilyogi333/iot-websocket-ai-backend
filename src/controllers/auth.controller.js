@@ -27,11 +27,20 @@ const register = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Error occurred while saving user data");
   }
 
-  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user);
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+    user
+  );
 
-  res.status(201).json(new ApiResponse(201, { accessToken, refreshToken, user }, "User registered successfully"));
+  res
+    .status(201)
+    .json(
+      new ApiResponse(
+        201,
+        { accessToken, refreshToken, user },
+        "User registered successfully"
+      )
+    );
 });
-
 
 const generateAccessAndRefreshTokens = async (user) => {
   try {
@@ -67,13 +76,24 @@ const login = asyncHandler(async (req, res) => {
     throw new ApiError(403, "Password does not match");
   }
 
-  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user);
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+    user
+  );
 
-  const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
 
-  res.status(200).json(new ApiResponse(200, { accessToken, refreshToken, user: loggedInUser }, "User logged in successfully"));
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { accessToken, refreshToken, user: loggedInUser },
+        "User logged in successfully"
+      )
+    );
 });
-
 
 const logout = asyncHandler(async (req, res) => {
   const user = req.user;
@@ -86,18 +106,24 @@ const logout = asyncHandler(async (req, res) => {
     { new: true }
   );
 
-  res.status(200).json(new ApiResponse(200, {}, "User logged out successfully"));
+  res
+    .status(200)
+    .json(new ApiResponse(200, {}, "User logged out successfully"));
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+  const incomingRefreshToken =
+    req.cookies.refreshToken || req.body.refreshToken;
 
   if (!incomingRefreshToken) {
     throw new ApiError(401, "User not authorized");
   }
 
   try {
-    const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const decodedToken = jwt.verify(
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
 
     if (!decodedToken) {
       throw new ApiError(401, "User not authorized");
@@ -109,11 +135,18 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       throw new ApiError(401, "Invalid or expired refresh token");
     }
 
-    const { newAccessToken, newRefreshToken } = await generateAccessAndRefreshTokens(user);
+    const { newAccessToken, newRefreshToken } =
+      await generateAccessAndRefreshTokens(user);
 
-    res.status(200).json(
-      new ApiResponse(200, { accessToken: newAccessToken, refreshToken: newRefreshToken }, "Access token refreshed successfully")
-    );
+    res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          { accessToken: newAccessToken, refreshToken: newRefreshToken },
+          "Access token refreshed successfully"
+        )
+      );
   } catch (error) {
     throw new ApiError(401, error.message || "Invalid refresh token");
   }
@@ -144,10 +177,4 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "password Changed successfully"));
 });
 
-export {
-  register,
-  login,
-  logout,
-  refreshAccessToken,
-  changeCurrentPassword,
-};
+export { register, login, logout, refreshAccessToken, changeCurrentPassword };
