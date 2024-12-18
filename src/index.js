@@ -1,8 +1,8 @@
 import "dotenv/config";
 import connectDb from "./config/mongoose.connection.js";
 import app from "./app.js";
-import { WebSocketServer } from "ws"; 
-import http from "http"; 
+import { WebSocketServer } from "ws";
+import http from "http";
 const port = process.env.PORT;
 
 // Create an HTTP server to use with WebSocket
@@ -36,8 +36,8 @@ wss.on("connection", (ws) => {
       } else if (action === "getData") {
         // Send current sensor data back to client (Flutter app)
         const sensorData = {
-          humidity: Math.random() * 100,  // Simulate random humidity data
-          temperature: Math.random() * 40,  // Simulate random temperature data
+          humidity: Math.random() * 100, // Simulate random humidity data
+          temperature: Math.random() * 40, // Simulate random temperature data
         };
         ws.send(JSON.stringify(sensorData));
       }
@@ -50,8 +50,8 @@ wss.on("connection", (ws) => {
   setInterval(() => {
     console.log("Sending data to Flutter app: Humidity and Temperature");
     const sensorData = {
-      humidity: Math.random() * 100,  // Simulate random humidity data
-      temperature: Math.random() * 40,  // Simulate random temperature data
+      humidity: Math.random() * 100, // Simulate random humidity data
+      temperature: Math.random() * 40, // Simulate random temperature data
     };
 
     // Send data to connected client (Flutter)
@@ -62,6 +62,8 @@ wss.on("connection", (ws) => {
     console.log("WebSocket client disconnected");
   });
 });
+
+export { wss };
 
 // Connect to the database and start the server
 connectDb()
@@ -76,4 +78,3 @@ connectDb()
   });
 
 console.log("Hello World");
-
