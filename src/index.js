@@ -7,7 +7,6 @@ const port = process.env.PORT;
 
 // Create an HTTP server to use with WebSocket
 const server = http.createServer(app);
-console.log("Server created", server);
 // Set up WebSocket server
 const wss = new WebSocketServer({ server });
 
