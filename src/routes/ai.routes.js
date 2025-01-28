@@ -6,6 +6,6 @@ import { verifyUser } from "../middlewares/auth.middleware.js";
 
 const router= Router()
 
-router.get("/news", predictedNews)
+router.get("/news",verifyUser, predictedNews)
 
 export default router;
